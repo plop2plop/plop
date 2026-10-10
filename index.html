@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-title" content="Plop 2.0">
+<title>Plop 2.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Martian+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --ground:#D8E3EE; --paper:#F7FAFC; --ink:#131519; --muted:#556170; --line:#AEBBCA;
+  --pop:#FF86A8; --pop-soft:#FFD9E4; --amber:#FFE7A8; --amber-ink:#5C3B00; --bad:#C2264B;
+  --display:"Bagel Fat One","Arial Rounded MT Bold",system-ui,sans-serif;
+  --body:"Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Martian Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{ color-scheme:dark; --ground:#11151B; --paper:#1A1F27; --ink:#EEF1F5; --muted:#99A3B1; --line:#343D4A;
+    --pop:#FF8FB1; --pop-soft:#3B2330; --amber:#3A2E10; --amber-ink:#FFD47A; --bad:#FF7A98; }
+}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:15px/1.5 var(--body);
+  padding-inline:max(18px, env(safe-area-inset-left, 0px));padding-block:max(14px, env(safe-area-inset-top, 0px)) 48px}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2.5px solid var(--ink);outline-offset:3px}
+.wrap{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.label{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.hint{font-size:13.5px;color:var(--muted);margin:0}
+
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 22px}
+.wordmark{margin:0;font-family:var(--display);font-weight:400;font-size:52px;line-height:.9;letter-spacing:-.02em;display:flex;align-items:flex-start;gap:6px}
+.wordmark sup{font-family:var(--mono);font-size:11px;letter-spacing:.04em;background:var(--ink);color:var(--ground);border-radius:999px;padding:3px 7px;margin-top:4px}
+.searchbar{flex:1 1 100%;order:3;display:flex}
+#q{flex:1;min-width:0;font-size:clamp(20px,3vw,26px);font-weight:500;padding:16px 26px;border:2.5px solid var(--ink);border-radius:999px;background:var(--paper);outline:none}
+#q::placeholder{color:var(--muted);font-weight:400}
+#q:focus{box-shadow:0 0 0 5px var(--pop-soft)}
+.status{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13.5px;color:var(--muted)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:2px solid var(--ink);background:transparent;color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:700;font-size:14px;text-decoration:none;cursor:pointer;line-height:1.1}
+.btn:hover{background:var(--ink);color:var(--ground)}
+
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:26px;align-items:start}
+.layout.solo{grid-template-columns:minmax(0,1fr)}
+@media (max-width:780px){.layout{grid-template-columns:1fr}}
+aside{display:flex;flex-direction:column;gap:18px}
+@media (min-width:781px){aside{position:sticky;top:14px;max-height:calc(100vh - 28px);overflow:auto;padding-bottom:8px}}
+@media (max-width:780px){
+  aside{gap:12px}
+  .filters-toggle{display:inline-flex}
+}
+.filterbox{display:block}
+.filterbody{display:flex;flex-direction:column;gap:18px}
+.filtersum{display:none}
+@media (max-width:780px){
+  .filtersum{display:inline-flex;align-items:center;gap:8px;list-style:none;cursor:pointer;border:2px solid var(--ink);border-radius:999px;padding:8px 16px;font-weight:700;background:var(--paper)}
+  .filtersum::-webkit-details-marker{display:none}
+  .filtersum .chev{display:inline-block;transition:transform .15s;font-size:14px}
+  .filterbox[open] .filtersum .chev{transform:rotate(180deg)}
+  .filterbox[open] .filtersum{background:var(--ink);color:var(--ground)}
+  .filterbox[open] .filterbody{margin-top:14px}
+}
+.fgroup{display:flex;flex-direction:column;gap:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1.5px solid var(--ink);background:var(--paper);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:500;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--ground)}
+.chip small{font-family:var(--mono);font-size:10px;opacity:.7;margin-left:4px}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:600;font-size:14px;cursor:pointer}
+.switch input{appearance:none;width:42px;height:24px;border-radius:999px;border:2px solid var(--ink);background:var(--paper);position:relative;cursor:pointer;flex:0 0 auto}
+.switch input::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--ink);transition:left .15s}
+.switch input:checked{background:var(--pop)}
+.switch input:checked::after{left:20px}
+.price{display:flex;gap:6px;align-items:center}
+.price input{width:100%;min-width:0;padding:7px 10px;border:1.5px solid var(--line);border-radius:12px;background:var(--paper);font-size:14px}
+select{padding:8px 12px;border:1.5px solid var(--ink);border-radius:999px;background:var(--paper);font-weight:600;font-size:14px}
+
+.reshead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px;margin-bottom:14px}
+.reshead h2{margin:0;font-size:20px;font-weight:700}
+.reshead h2 span{color:var(--muted);font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:16px 14px}
+.card{display:flex;flex-direction:column;gap:6px}
+.imgwrap{position:relative}
+.card a.img{display:block}
+.card a.name{color:inherit;text-decoration:none}
+.card a.name:hover{text-decoration:underline;text-underline-offset:3px}
+.img{position:relative;aspect-ratio:4/5;border-radius:18px;overflow:hidden;border:2px solid var(--ink);max-width:100%;background:var(--paper)}
+.img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.card a.img:hover img{transform:scale(1.03)}
+@media (prefers-reduced-motion:reduce){.img img{transition:none}.card a.img:hover img{transform:none}}
+.badge{position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--pop);color:#131519;border:1.5px solid #131519}
+.card .shop{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.card .name{font-weight:600;line-height:1.3;font-size:14px}
+.card .cost{font-weight:700}
+.card .cost s{color:var(--muted);font-weight:400;margin-left:6px}
+.viewtabs{display:flex;gap:4px;padding:4px;border:2px solid var(--ink);border-radius:999px;background:var(--paper)}
+.viewtabs button{border:0;background:none;border-radius:999px;padding:9px 16px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.viewtabs button[aria-selected="true"]{background:var(--ink);color:var(--ground)}
+.viewtabs button b{font-family:var(--mono);font-size:12px;font-weight:500;background:var(--pop);color:#131519;border-radius:999px;padding:1px 7px}
+.viewtabs button span{color:var(--pop)}
+.wishbtn{display:inline-flex;align-items:center;gap:7px;border:2px solid var(--ink);background:var(--paper);border-radius:999px;padding:11px 16px;font-weight:700;cursor:pointer}
+.wishbtn b{font-family:var(--mono);font-size:12px;background:var(--ink);color:var(--ground);border-radius:999px;padding:1px 7px;font-weight:500}
+.wishbtn[aria-pressed="true"]{background:var(--pop)}
+.heart{position:absolute;bottom:10px;right:10px;width:36px;height:36px;border-radius:50%;border:2px solid #131519;background:#F7FAFC;color:#131519;display:grid;place-items:center;font-size:17px;line-height:1;cursor:pointer;transition:transform .12s}
+.heart:hover{transform:scale(1.08)}
+.heart[aria-pressed="true"]{background:var(--pop)}
+@media (prefers-reduced-motion:reduce){.heart{transition:none}.heart:hover{transform:none}}
+.note{font-size:12.5px;color:var(--muted)}
+.note.up{color:var(--bad)}
+.wishbar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:14px;padding:12px 14px;border-radius:16px;background:var(--paper);border:2px solid var(--ink)}
+.wishbar .total{font-weight:700;margin-right:auto}
+.sizerows{display:flex;flex-direction:column;gap:8px}
+.sizerow{display:flex;flex-direction:column;gap:4px}
+.sizelabel{font-size:12px;font-weight:600;color:var(--muted)}
+.sizerow:last-child .sizelabel{display:none}
+.sizerows .chip{padding:4px 10px;font-size:13px;min-width:36px}
+.linkbtn{border:0;background:none;padding:0;color:var(--ink);font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+.nophoto{display:grid;place-items:center;height:100%;padding:12px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.empty{padding:40px 20px;text-align:center;border:2px dashed var(--line);border-radius:18px;color:var(--muted)}
+.more{display:flex;justify-content:center;margin-top:20px}
+
+.others{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 14px;padding:10px 14px;border:1.5px dashed var(--line);border-radius:16px;font-size:13.5px;color:var(--muted)}
+.others p{margin:0}
+.others b{color:var(--ink);font-weight:600}
+.btn.small{padding:6px 12px;font-size:13px;border-width:1.5px}
+.fallback{margin-top:30px;padding-top:16px;border-top:2px solid var(--ink);display:flex;flex-direction:column;gap:10px}
+.fallback .row{display:flex;flex-wrap:wrap;gap:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1 class="wordmark">Plop<sup>2.0</sup></h1>
+    <form class="searchbar" id="form" autocomplete="off" role="search">
+      <input id="q" type="search" enterkeyhint="search" placeholder="Search 8 shops, e.g. black midi skirt" aria-label="What are you looking for?">
+    </form>
+    <div class="viewtabs" role="tablist" aria-label="View">
+      <button type="button" role="tab" id="tabAll" aria-selected="true">All products</button>
+      <button type="button" role="tab" id="tabWish" aria-selected="false"><span aria-hidden="true">♥</span> Wishlist <b id="wishCount">0</b></button>
+    </div>
+  </div>
+  <div class="status" id="status"></div>
+  <section class="others">
+    <p><b>Not connected yet:</b> THE ICONIC, Farfetch, THE OUTNET, ASOS, COS, Zara, NET-A-PORTER and SSENSE.</p>
+    <a class="btn small" id="googleOthers" target="_blank" rel="noopener">Search them on Google</a>
+  </section>
+
+  <div class="layout">
+    <aside id="filters">
+     <details class="filterbox" id="filterBox" open>
+      <summary class="filtersum"><span class="sumtext">Show filters</span><span class="chev" aria-hidden="true">▾</span></summary>
+      <div class="filterbody">
+      <div class="fgroup">
+        <span class="label">For</span>
+        <div class="chips" id="genders"></div>
+      </div>
+      <div class="fgroup">
+        <span class="label">Category</span>
+        <div class="chips" id="cats"></div>
+      </div>
+      <div class="fgroup">
+        <span class="label">Added</span>
+        <div class="chips" id="dates"></div>
+      </div>
+      <div class="fgroup">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+          <span class="label">Shops</span>
+          <span style="display:flex;gap:10px"><button type="button" class="linkbtn" id="shopsAll">Select all</button><button type="button" class="linkbtn" id="shopsNone">Unselect all</button></span>
+        </div>
+        <div class="chips" id="shops"></div>
+      </div>
+      <div class="fgroup">
+        <span class="label">Price (AUD)</span>
+        <div class="price"><input id="pmin" inputmode="numeric" placeholder="Min" aria-label="Minimum price"> – <input id="pmax" inputmode="numeric" placeholder="Max" aria-label="Maximum price"></div>
+      </div>
+      <div class="fgroup">
+        <label class="switch" for="saleOnly">On sale only <input type="checkbox" id="saleOnly"></label>
+      </div>
+      </div>
+     </details>
+    </aside>
+
+    <main>
+      <div class="reshead">
+        <h2 id="count"></h2>
+        <label id="sortWrap" style="display:flex;gap:8px;align-items:center"><span class="label">Sort</span>
+          <select id="sort">
+            <option value="match">Best match</option>
+            <option value="new">Newest first</option>
+            <option value="low">Price: low to high</option>
+            <option value="high">Price: high to low</option>
+          </select>
+        </label>
+      </div>
+      <div class="wishbar" id="wishBar" hidden></div>
+      <div class="grid" id="grid"></div>
+      <div class="more"><button type="button" class="btn" id="showMore" hidden>Show more</button></div>
+
+    </main>
+  </div>
+</div>
+<script src="products.js"></script>
+<script>
+/* products.js is rebuilt every morning by .github/workflows/refresh.yml */
+const PRODUCTS = (window.PLOP && window.PLOP.products) || [];
+const SNAPSHOT_DATE = (window.PLOP && window.PLOP.date) || "";
+const SNAPSHOT_ISO = (window.PLOP && window.PLOP.iso) || new Date().toISOString().slice(0,10);
+</script>
+<script src="app.js"></script>
+</body>
+</html>

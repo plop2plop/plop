@@ -1,0 +1,13 @@
+{
+  "about": "Shops Plop reads every day. Each must be a Shopify store whose /products.json is public and whose prices are in AUD. To add one, copy a line and change the name and host (the shop's web address without https://).",
+  "shops": [
+    { "name": "Radical Yes", "host": "radicalyes.com.au" },
+    { "name": "Alpha60",     "host": "www.alpha60.com.au" },
+    { "name": "BUL",         "host": "www.bul.com.au" },
+    { "name": "Kloke",       "host": "www.kloke.com.au" },
+    { "name": "Lee Mathews", "host": "www.leemathews.com.au" },
+    { "name": "Venroy",      "host": "www.venroy.com.au" },
+    { "name": "Kowtow",      "host": "au.kowtowclothing.com" },
+    { "name": "Matteau",     "host": "www.matteau-store.com" }
+  ]
+}
