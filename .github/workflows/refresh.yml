@@ -1,0 +1,28 @@
+# Refreshes Plop's products every morning (about 5–6am Sydney time) and publishes the update.
+# Can also be run by hand from the Actions tab: "Refresh products" → "Run workflow".
+name: Refresh products
+
+on:
+  schedule:
+    - cron: "0 19 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Read the shops' product lists
+        run: node scripts/build.cjs
+      - name: Save the new products
+        run: |
+          git config user.name "plop-refresh"
+          git config user.email "plop-refresh@users.noreply.github.com"
+          git add products.js
+          git diff --cached --quiet && echo "No changes today" || (git commit -m "Refresh products" && git push)
